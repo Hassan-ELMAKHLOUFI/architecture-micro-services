@@ -1,0 +1,49 @@
+version: '3'
+services:
+  eureka-service:
+    image: eureka-service
+    ports:
+      - "8761:8761"
+    networks:
+      - default-network
+
+  customer-service:
+    image: customer-service
+    hostname: customer-service
+    ports:
+      - "8081:8081"
+    depends_on:
+      - eureka-service
+
+    networks:
+      - default-network
+
+  billing-service:
+    image: billing-service
+    hostname: billing-service
+    ports:
+      - "8082:8082"
+    restart: on-failure
+    depends_on:
+      - customer-service
+      - eureka-service
+
+    networks:
+      - default-network
+
+  gateway-service:
+    image: gateway-service
+    hostname: gateway-service
+    ports:
+      - "8888:8888"
+    depends_on:
+      - customer-service
+      - billing-service
+      - eureka-service
+
+    networks:
+      - default-network
+
+networks:
+  default-network:
+
