@@ -1,3 +1,9 @@
+## Architecture de l'application 
+
+![](screens/3.png)
+
+## Customer entity
+
 ````java
 package ma.hassan.customerservice.entities;
 
@@ -202,5 +208,245 @@ COPY target/*.jar customer-service.jar
 ENTRYPOINT exec java $JAVA_OPTS -jar customer-service.jar
 ````
 
+## Billing service 
+
+## Invoice Entity
+````java
+package ma.hassan.billing.entities;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Transient;
+import java.math.BigDecimal;
+import java.util.Date;
+
+@Entity
+@Data @AllArgsConstructor @NoArgsConstructor
+public class Invoice {
+    @Id
+    private String id;
+    private Date date;
+    private BigDecimal amount;
+    private String customerId;
+    @Transient
+    private Customer customer;
+    
+}
+
+````
+
+## class customer
+````java
+package ma.hassan.billing.entities;
+
+import lombok.Data;
+
+@Data
+public class Customer {
+
+    private String id;
+    private String name;
+    private String email;
 
 
+    public Customer(String id, String name, String email) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+    }
+
+    public Customer() {
+
+    }
+}
+````
+## Invoice Request DTO
+````java
+package ma.hassan.billing.DTOs;
+
+
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
+
+@Data  @NoArgsConstructor
+public class InvoiceRequestDTO {
+    private BigDecimal amount;
+    private String customerId;
+
+    public BigDecimal getAmount() {
+        return amount;
+    }
+
+    public InvoiceRequestDTO(BigDecimal amount, String customerId) {
+        this.amount = amount;
+        this.customerId = customerId;
+    }
+
+}
+
+````
+
+## Invoice Response DTO 
+````java
+
+package ma.hassan.billing.DTOs;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import ma.hassan.billing.entities.Customer;
+
+
+import java.math.BigDecimal;
+import java.util.Date;
+
+
+public class InvoiceResponseDTO {
+
+    private String id;
+    private Date date;
+    private BigDecimal amount;
+    private Customer customer;
+
+    public InvoiceResponseDTO(String id, Date date, BigDecimal amount, Customer customer) {
+        this.id = id;
+        this.date = date;
+        this.amount = amount;
+        this.customer = customer;
+    }
+
+    public InvoiceResponseDTO() {
+
+    }
+
+
+
+}
+
+````
+
+## Invoice Respository 
+````java
+package ma.hassan.billing.repositories;
+
+import ma.hassan.billing.entities.Invoice;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
+
+public interface InvoiceRepository extends JpaRepository<Invoice,String> {
+
+    List<Invoice> findByCustomerId(String clientId);
+}
+
+````
+## Customer Rest Client
+
+````java
+package ma.hassan.billing.openfeign;
+
+import ma.hassan.billing.entities.Customer;
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+
+import java.util.List;
+
+@FeignClient(name = "CUSTOMER-SERVICE")
+
+public interface CustomerRestClient {
+    @GetMapping(path="/api/customers/{id}")
+    Customer getCustomer(@PathVariable (name = "id")String id);
+
+    @GetMapping(path = "/api/customers")
+    List<Customer> allCustomers();
+
+}
+
+````
+## Invoice Service 
+````java
+package ma.hassan.billing.services;
+
+
+
+
+import ma.hassan.billing.DTOs.InvoiceRequestDTO;
+import ma.hassan.billing.DTOs.InvoiceResponseDTO;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public interface InvoiceService {
+
+    public InvoiceResponseDTO save(InvoiceRequestDTO invoiceRequestDTO);
+
+    public InvoiceResponseDTO getInvoice(String InvoiceId);
+
+    List<InvoiceResponseDTO> invoicesByCustomerId(String customerId);
+
+    List<InvoiceResponseDTO> allInvoices();
+}
+
+````
+
+## Invoice Rest Contoller 
+````java
+package ma.hassan.billing.web;
+
+import lombok.AllArgsConstructor;
+import ma.hassan.billing.DTOs.InvoiceRequestDTO;
+import ma.hassan.billing.DTOs.InvoiceResponseDTO;
+import ma.hassan.billing.services.InvoiceService;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+import static org.aspectj.weaver.tools.cache.SimpleCacheFactory.path;
+
+@RestController
+@RequestMapping(path = "/api")
+public class invoiceRestController {
+    private InvoiceService invoiceService ;
+    public invoiceRestController (InvoiceService invoiceService) {
+        this.invoiceService = invoiceService;
+    }
+
+    @GetMapping(path = "/invoices/{id}")
+    public InvoiceResponseDTO getInvoice(@PathVariable(name = "id") String invoiceId){
+        return invoiceService.getInvoice(invoiceId);
+
+    }
+    @GetMapping(path = "/invoicesByCustomer/{customerId}")
+    public List<InvoiceResponseDTO> getInvoicesByCustomer (@PathVariable(name = "customerId") String customerId){
+        return invoiceService.invoicesByCustomerId(customerId);
+
+    }
+
+    @PostMapping(path = "/invoices")
+    public InvoiceResponseDTO save(InvoiceRequestDTO invoiceRequestDTO) {
+        return invoiceService.save(invoiceRequestDTO);
+
+
+    }
+
+    @GetMapping(path = "/invoices")
+    public List<InvoiceResponseDTO> getAllInvoices(){
+        return invoiceService.allInvoices();
+    }
+
+
+
+}
+
+````
+
+## Test 
+![](screens/2.png)
