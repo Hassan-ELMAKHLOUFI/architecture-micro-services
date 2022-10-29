@@ -16,8 +16,8 @@ public class CustomerServiceApplication {
     @Bean
     CommandLineRunner start(CustomerService customerService){
         return args -> {
-            customerService.save(new CustomerRequestDTO("C01","adria","adria@gmail.com"));
-            customerService.save(new CustomerRequestDTO("C02","openLab","openLab@gmail.com"));
+            customerService.save(new CustomerRequestDTO("C01","hassan","hassan@gmail.com"));
+            customerService.save(new CustomerRequestDTO("C02","elmakhloufi","elmakhloufi@gmail.com"));
 
         };
     }

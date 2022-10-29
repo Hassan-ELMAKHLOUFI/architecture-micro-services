@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.springframework.boot:spring-boot-starter-cache:2.6.13-SNAPSHOT">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/springframework/boot/spring-boot-starter-cache/2.6.13-SNAPSHOT/spring-boot-starter-cache-2.6.13-20221020.051643-29.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/org/springframework/boot/spring-boot-starter-cache/2.6.13-SNAPSHOT/spring-boot-starter-cache-2.6.13-20221020.051643-29-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/springframework/boot/spring-boot-starter-cache/2.6.13-SNAPSHOT/spring-boot-starter-cache-2.6.13-20221020.051643-29-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

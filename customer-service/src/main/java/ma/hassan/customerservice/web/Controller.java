@@ -2,7 +2,6 @@ package ma.hassan.customerservice.web;
 
 import ma.hassan.customerservice.DTOs.CustomerRequestDTO;
 import ma.hassan.customerservice.DTOs.CustomerResponseDTO;
-import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ma.hassan.customerservice.services.CustomerService;
 
@@ -30,7 +29,6 @@ public class Controller {
 
     @GetMapping(path = "/customers/{id}")
     public CustomerResponseDTO getCustomer(@PathVariable String  id){
-        System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@");
         return  customerService.getCustomer(id);
     }
 }
