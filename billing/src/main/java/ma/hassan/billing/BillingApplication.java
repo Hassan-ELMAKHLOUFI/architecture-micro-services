@@ -18,7 +18,7 @@ public class BillingApplication {
 		SpringApplication.run(BillingApplication.class, args);
 	}
 
-	@Bean
+	//@Bean
 	CommandLineRunner start(InvoiceService invoiceService){
 		return args -> {
 			invoiceService.save(new InvoiceRequestDTO(BigDecimal.valueOf(78000),"1"));

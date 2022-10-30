@@ -22,7 +22,7 @@ services:
     image: billing-service
     hostname: billing-service
     ports:
-      - "8082:8082"
+      - "8085:8085"
     restart: on-failure
     depends_on:
       - customer-service

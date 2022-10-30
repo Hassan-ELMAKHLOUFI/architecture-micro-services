@@ -450,3 +450,12 @@ public class invoiceRestController {
 
 ## Test 
 ![](screens/2.png)
+
+## Docker file 
+````Dockerfile
+FROM adoptopenjdk/openjdk8
+
+EXPOSE 8082
+COPY target/*.jar billing-service.jar
+ENTRYPOINT exec java $JAVA_OPTS -jar billing-service.jar
+````
